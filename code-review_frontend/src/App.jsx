@@ -43,7 +43,12 @@ function App() {
   };
 
   const handleFollowUp=async()=>{
-    if(!followUpInput.trim()) return;
+    const question = followUpInput.trim();
+    if(!question) return;
+
+    setFollowUpsInput("")
+    setFollowUpLoading(true);
+    
 
     try{
     const response = await axios.post(

@@ -30,7 +30,7 @@ export const followUp = async (req, res)=>{
     if ( !sessionId || !question){
     return res.status(400).send("sessionId and questions are required");
   }
-  const response = await sendChatMessage(sessionId,question);
+  const response = await sendChatMessages(sessionId,question);
 
   res.json({success:true,data:response});
 
