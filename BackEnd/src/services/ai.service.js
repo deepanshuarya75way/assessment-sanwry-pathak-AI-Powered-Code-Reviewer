@@ -16,7 +16,7 @@ const genAI = new GoogleGenerativeAI(apiKey);
 
 // Configure the model
 const model = genAI.getGenerativeModel({
-  model: "gemini-2.0-flash",
+  model: "gemini-3.5-flash-lite",
   systemInstruction: `Here’s a solid system instruction for your AI code reviewer:
                         
                            AI System Instruction: Senior Code Reviewer (7+ Years of Experience)
@@ -92,7 +92,37 @@ const model = genAI.getGenerativeModel({
 });
 
 // Generate review content
-export default async function generateContent(prompt) {
+const chatSessions= new Map()
+
+function getOrCreateChatSession(sessionId){
+  if(!chatSessions.has(sessionId)){
+    const chat= model.startChat({history:[]});
+    chatSessions.set(sessionId, chat);
+  }
+
+  return chatSessions.get(sessionId);
+}
+
+export async function sendChatMessages(sessionId,message) {
+  try{
+    if(!message){
+      throw new Error("Message required:");
+    }
+    const chat=getOrCreateChatSession(sessionId);
+    const result = await chat.sendMessage(message);
+
+    if(!result?.response){
+      throw new Error("Empty response from gemini");
+    }
+
+    return result.response.text();
+}catch(error){
+  console.error("error in chat message",error.message);
+  return "failed to proceed message. please try again later.";
+}
+}
+
+export default async function generateContent(prompt, history=[]) {
   try {
     if (!prompt) throw new Error("Prompt is required for code review.");
 

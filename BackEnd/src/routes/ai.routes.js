@@ -1,8 +1,11 @@
 import express from "express";
-import { getReview } from "../controllers/ai.controller.js";
+import { getReview, followUp} from "../controllers/ai.controller.js";
 
 const router = express.Router();
 
 router.post("/get-review", getReview);
+router.post("/follow-up", followUp);
 
-export default router;  // ✅ default export
+export default router;
+
+
